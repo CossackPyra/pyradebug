@@ -33,7 +33,9 @@ func GetGoroutineId() string {
 	s1 := string(b1)
 	as1 := strings.Split(s1, "\n")
 	s2 := as1[0]
-	s3 := s2[:len(s2)-11][10:]
+	// // s3 := s2[:len(s2)-11][10:]
+	// s3 := s2[:len(s2)-11]
+	s3, _ := parseFirstLine(s2)
 	return s3
 }
 
