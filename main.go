@@ -14,9 +14,9 @@ type PyraDebug struct {
 }
 
 type GoroutineInfo struct {
-	id     string
-	name   string
-	status string
+	Id     string
+	Name   string
+	Status string
 }
 
 func InitPyraDebug() *PyraDebug {
@@ -46,7 +46,7 @@ func (pd *PyraDebug) SetGoroutineName(name string) {
 	if ok {
 		panic(errors.New("Goroutine name is set twice"))
 	}
-	pd.history[id] = &GoroutineInfo{id: id, name: name}
+	pd.history[id] = &GoroutineInfo{Id: id, Name: name}
 }
 
 func parseFirstLine(s2 string) (id string, status string) {
@@ -76,7 +76,7 @@ func (pd *PyraDebug) ListGoroutines(bufferSize int) (result []*GoroutineInfo) {
 			continue
 		}
 		id, status := parseFirstLine(as2[0])
-		result = append(result, &GoroutineInfo{id: id, status: status})
+		result = append(result, &GoroutineInfo{Id: id, Status: status})
 	}
 
 	pd.GiveNames(result)
@@ -88,9 +88,9 @@ func (pd *PyraDebug) GiveNames(a1 []*GoroutineInfo) {
 	defer pd.lck.Unlock()
 
 	for _, gi := range a1 {
-		gi2 := pd.history[gi.id]
+		gi2 := pd.history[gi.Id]
 		if gi2 != nil {
-			gi.name = gi2.name
+			gi.Name = gi2.Name
 		}
 	}
 }
