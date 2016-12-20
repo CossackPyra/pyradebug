@@ -19,6 +19,7 @@ type GoroutineInfo struct {
 	Id     string
 	Name   string
 	Status string
+	keep   bool
 }
 
 func InitPyraDebug() *PyraDebug {
@@ -65,7 +66,7 @@ func parseFirstLine(s2 string) (id string, status string) {
 	return id, status
 }
 
-func (pd *PyraDebug) ListGoroutines(bufferSize int) (result []*GoroutineInfo) {
+func (pd *PyraDebug) ListGoroutines(bufferSize int, clean bool) (result []*GoroutineInfo) {
 	if pd.Debug {
 		fmt.Printf("PyraDebug.ListGoroutines %#v\n", pd.history)
 	}
@@ -90,18 +91,34 @@ func (pd *PyraDebug) ListGoroutines(bufferSize int) (result []*GoroutineInfo) {
 		result = append(result, &GoroutineInfo{Id: id, Status: status})
 	}
 
-	pd.GiveNames(result)
+	pd.GiveNames(result, clean)
 
 	return result
 }
-func (pd *PyraDebug) GiveNames(a1 []*GoroutineInfo) {
+func (pd *PyraDebug) GiveNames(a1 []*GoroutineInfo, clean bool) {
 	pd.lck.Lock()
 	defer pd.lck.Unlock()
+
+	if clean {
+		for _, gi2 := range pd.history {
+			gi2.keep = false
+		}
+	}
 
 	for _, gi := range a1 {
 		gi2 := pd.history[gi.Id]
 		if gi2 != nil {
+			gi2.keep = true
 			gi.Name = gi2.Name
 		}
 	}
+
+	if clean {
+		for id, gi2 := range pd.history {
+			if !gi2.keep {
+				delete(pd.history, id)
+			}
+		}
+	}
+
 }
