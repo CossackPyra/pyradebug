@@ -2,6 +2,7 @@ package pyradebug
 
 import (
 	"errors"
+	"fmt"
 	"runtime"
 	"strings"
 	"sync"
@@ -9,6 +10,7 @@ import (
 
 type PyraDebug struct {
 	Enable  bool
+	Debug   bool
 	lck     sync.Mutex
 	history map[string]*GoroutineInfo
 }
@@ -39,6 +41,9 @@ func (pd *PyraDebug) SetGoroutineName(name string) {
 	if !pd.Enable {
 		return
 	}
+	if pd.Debug {
+		fmt.Printf("PyraDebug.SetGoroutineName %s\n", name)
+	}
 	id := GetGoroutineId()
 	pd.lck.Lock()
 	defer pd.lck.Unlock()
@@ -59,6 +64,9 @@ func parseFirstLine(s2 string) (id string, status string) {
 }
 
 func (pd *PyraDebug) ListGoroutines(bufferSize int) (result []*GoroutineInfo) {
+	if pd.Debug {
+		fmt.Printf("PyraDebug.ListGoroutines %v\n", pd.history)
+	}
 	b1 := make([]byte, bufferSize)
 	runtime.Stack(b1, true)
 	s1 := string(b1)
