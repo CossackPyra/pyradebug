@@ -41,10 +41,10 @@ func (pd *PyraDebug) SetGoroutineName(name string) {
 	if !pd.Enable {
 		return
 	}
-	if pd.Debug {
-		fmt.Printf("PyraDebug.SetGoroutineName %s\n", name)
-	}
 	id := GetGoroutineId()
+	if pd.Debug {
+		fmt.Printf("PyraDebug.SetGoroutineName id:%s name:%s\n", id, name)
+	}
 	pd.lck.Lock()
 	defer pd.lck.Unlock()
 	// pd.history = append(pd.history, &GoroutineInfo{id: id, name: name})
@@ -65,7 +65,7 @@ func parseFirstLine(s2 string) (id string, status string) {
 
 func (pd *PyraDebug) ListGoroutines(bufferSize int) (result []*GoroutineInfo) {
 	if pd.Debug {
-		fmt.Printf("PyraDebug.ListGoroutines %v\n", pd.history)
+		fmt.Printf("PyraDebug.ListGoroutines %#v\n", pd.history)
 	}
 	b1 := make([]byte, bufferSize)
 	runtime.Stack(b1, true)
