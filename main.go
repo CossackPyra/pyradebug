@@ -21,6 +21,7 @@ type GoroutineInfo struct {
 
 func InitPyraDebug() *PyraDebug {
 	pd := &PyraDebug{}
+	pd.history = make(map[string]*GoroutineInfo)
 	return pd
 }
 
