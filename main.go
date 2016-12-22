@@ -67,6 +67,9 @@ func parseFirstLine(s2 string) (id string, status string) {
 }
 
 func (pd *PyraDebug) ListGoroutines(bufferSize int, clean bool) (result []*GoroutineInfo) {
+	if !pd.Enable {
+		return
+	}
 	if pd.Debug {
 		fmt.Printf("PyraDebug.ListGoroutines %#v\n", pd.history)
 	}
